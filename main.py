@@ -1,43 +1,71 @@
 import numpy as np
 import pandas as pd
-from bootstrap_utils import generate_bootstrap_sample
 from Estimator.bayesian_estimator import BayesianOptimalStopping
+from Estimator.logistic_estimator import estimate_accept_logistic
 from simulate_multiple import simulate_multiple
-# 设置候选人 CSV 文件路径（或是以后的数据源）
-input_csv = "candidates.csv"
 
-# 生成 bootstrap 样本，作为训练数据的候选人特征
-bootstrap_df = generate_bootstrap_sample(input_csv)
-print(f"从 {input_csv} 生成 bootstrap sample，共 {len(bootstrap_df)} 行。")
+def load_excel_data(input_excel_path, sheet_name=0):
+    """
+    读取 Excel 文件中的数据，并返回特征 X 和 true_w（从第一行提取）。
 
-# 将 bootstrap 样本转换为 numpy 数组作为 X_train ===
-X_train = bootstrap_df.values
+    要求：
+    - 第一行是权重行（sample_id 为 'weight'）；
+    - 剩下是样本数据；
+    - 第一列为 sample_id（不参与建模）；
+    - 其余列为特征。
 
-# 获取特征维度，根据 X_train 的列数自动确定真实权重的长度
-n_features = X_train.shape[1]
-print(f"候选人特征的数量：{n_features}")
+    参数：
+    - input_excel_path: str, Excel 文件路径
+    - sheet_name: Excel 工作表名称或索引（默认第一个）
 
-# 定义真实权重向量 true_w（需要想想怎么构建，给定还是随机还是用户输入）
-# 这下面示例随机生成一个权重向量（范围可调）
-true_w = np.random.uniform(0.5, 1.5, size=n_features)
-print("生成的真实权重向量 true_w：", true_w)
+    返回：
+    - X: numpy.ndarray，特征矩阵（不含权重行）
+    - true_w: numpy.ndarray，第一行的权重向量
+    """
+    # 读取数据，第一列作为索引
+    df = pd.read_excel(input_excel_path, sheet_name=sheet_name)
 
-# === 根据 X_train 计算 y_train：采用线性模型 y = X * true_w + 噪音 ===
-y_train = X_train.dot(true_w) + np.random.normal(0, 0.1, size=len(X_train))
+    # 提取权重行（第一行）
+    true_w = df.iloc[0, 1:].values.astype(float)
 
-# 5. 调用整个模拟流程（多次贝叶斯模拟）
-# 模拟过程会多次运行贝叶斯最优停止模型，记录每次的停止轮次及详细决策信息
+    # 提取样本数据（从第二行开始，不包括 sample_id 列）
+    X = df.iloc[1:, 1:].values.astype(float)
+
+    return X, true_w
+
+
+# === 1. 从 Excel 文件加载数据 ===
+input_excel_path = "C:/File/Best_Candidate_Estimator/test.xlsx"  
+X_train, true_w = load_excel_data(input_excel_path)
+    
+print(f"从 {input_excel_path} 读取样本：{len(X_train)} 行, {X_train.shape[1]} 个特征")
+print("读取到的 true_w 向量：", true_w)
+
+# === 2. 根据 true_w 构造目标变量 y_train ===
+noise_std = 0.1
+y_train = X_train.dot(true_w) + np.random.normal(0, noise_std, size=len(X_train))
+
+# === 3. 多次贝叶斯最优停止模拟 ===
 expected_stop, df_rounds = simulate_multiple(
     BayesianOptimalStopping,
     X_train,
     y_train,
     true_w,
     max_rounds=30,
-    num_simulations=1000
+    num_simulations=100  # 可以根据需要调整模拟次数
 )
 
+# === 4. 输出结果 ===
 print("\n模拟结果：")
 print("估计的期望停止轮次:", expected_stop)
+
+df_prob = df_rounds.groupby("round")["predicted_prob_better"].mean().reset_index()
+print("\n各轮次的平均下一次更优概率:")
+print(df_prob)
+
+print("\n部分模拟详细信息：")
+print(df_rounds.head())
+
 
 # # ------------------------------
 # # 6. 保存详细模拟决策信息到 CSV 文件中
