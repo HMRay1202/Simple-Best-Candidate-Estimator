@@ -1,0 +1,118 @@
+/* 全局样式 */
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.el-container {
+    min-height: 100vh;
+}
+
+/* 头部样式 */
+.el-header {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.logo h1 {
+    margin: 0;
+    color: #409EFF;
+    font-size: 1.5rem;
+}
+
+.nav-menu {
+    border-bottom: none;
+}
+
+/* 主要内容区样式 */
+.el-main {
+    padding: 40px;
+    background-color: #f5f7fa;
+}
+
+.hero-section {
+    text-align: center;
+    padding: 60px 0;
+    background: linear-gradient(135deg, #e0f2ff 0%, #f0f9ff 100%);
+    border-radius: 8px;
+    margin-bottom: 40px;
+}
+
+.hero-section h2 {
+    font-size: 2.5rem;
+    color: #303133;
+    margin-bottom: 20px;
+}
+
+.hero-section p {
+    font-size: 1.2rem;
+    color: #606266;
+    margin-bottom: 30px;
+}
+
+.features-section {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    text-align: center;
+    padding: 20px;
+}
+
+.feature-card i {
+    font-size: 2rem;
+    color: #409EFF;
+    margin-bottom: 15px;
+}
+
+.feature-card h3 {
+    color: #303133;
+    margin: 10px 0;
+}
+
+.feature-card p {
+    color: #606266;
+    line-height: 1.6;
+}
+
+/* 页脚样式 */
+.el-footer {
+    background-color: #304156;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* 响应式布局 */
+@media screen and (max-width: 768px) {
+    .el-main {
+        padding: 20px;
+    }
+
+    .hero-section {
+        padding: 40px 20px;
+    }
+
+    .hero-section h2 {
+        font-size: 2rem;
+    }
+
+    .el-col {
+        margin-bottom: 20px;
+    }
+} 

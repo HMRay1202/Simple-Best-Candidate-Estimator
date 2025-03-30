@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史相亲对象信息录入 - 相亲匹配决策系统</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/questionnaire.css">
+</head>
+<body>
+    <div id="app">
+        <el-container>
+            <!-- 顶部导航栏 -->
+            <el-header>
+                <div class="header-content">
+                    <div class="logo">
+                        <h1>相亲匹配决策系统</h1>
+                    </div>
+                    <el-menu mode="horizontal" :router="true" class="nav-menu">
+                        <el-menu-item index="/">返回首页</el-menu-item>
+                    </el-menu>
+                </div>
+            </el-header>
+
+            <!-- 主要内容区 -->
+            <el-main>
+                <div class="questionnaire-container">
+                    <h2>历史相亲对象信息录入</h2>
+                    <p class="description">请填写您过往相亲对象的基本信息，这些数据将用于训练匹配模型</p>
+
+                    <el-form 
+                        ref="candidateForm"
+                        :model="formData"
+                        :rules="rules"
+                        label-width="120px"
+                        class="candidate-form">
+                        
+                        <!-- 基本信息 -->
+                        <h3>基本信息</h3>
+                        <el-form-item label="姓名" prop="name">
+                            <el-input v-model="formData.name" placeholder="请输入姓名"></el-input>
+                        </el-form-item>
+                        <el-form-item label="性别" prop="gender">
+                            <el-radio-group v-model="formData.gender">
+                                <el-radio label="male">男</el-radio>
+                                <el-radio label="female">女</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                        <el-form-item label="年龄" prop="age">
+                            <el-input-number v-model="formData.age" :min="18" :max="80"></el-input-number>
+                        </el-form-item>
+                        <el-form-item label="身高(cm)" prop="height">
+                            <el-input-number v-model="formData.height" :min="140" :max="200"></el-input-number>
+                        </el-form-item>
+
+                        <!-- 教育背景 -->
+                        <h3>教育背景</h3>
+                        <el-form-item label="学历" prop="education">
+                            <el-select v-model="formData.education" placeholder="请选择学历">
+                                <el-option label="高中" value="high_school"></el-option>
+                                <el-option label="大专" value="college"></el-option>
+                                <el-option label="本科" value="bachelor"></el-option>
+                                <el-option label="硕士" value="master"></el-option>
+                                <el-option label="博士" value="phd"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="毕业院校" prop="school">
+                            <el-input v-model="formData.school" placeholder="请输入毕业院校"></el-input>
+                        </el-form-item>
+
+                        <!-- 职业信息 -->
+                        <h3>职业信息</h3>
+                        <el-form-item label="职业" prop="occupation">
+                            <el-input v-model="formData.occupation" placeholder="请输入职业"></el-input>
+                        </el-form-item>
+                        <el-form-item label="年收入(万)" prop="income">
+                            <el-input-number v-model="formData.income" :min="0" :max="1000"></el-input-number>
+                        </el-form-item>
+
+                        <!-- 个人特质评分 -->
+                        <h3>个人特质评分（1-5分）</h3>
+                        <el-form-item label="外貌条件" prop="appearance">
+                            <el-rate v-model="formData.appearance"></el-rate>
+                        </el-form-item>
+                        <el-form-item label="性格特征" prop="personality">
+                            <el-rate v-model="formData.personality"></el-rate>
+                        </el-form-item>
+                        <el-form-item label="沟通能力" prop="communication">
+                            <el-rate v-model="formData.communication"></el-rate>
+                        </el-form-item>
+                        <el-form-item label="价值观契合" prop="values">
+                            <el-rate v-model="formData.values"></el-rate>
+                        </el-form-item>
+
+                        <!-- 相亲结果 -->
+                        <h3>相亲结果</h3>
+                        <el-form-item label="见面次数" prop="meetingTimes">
+                            <el-input-number v-model="formData.meetingTimes" :min="1" :max="100"></el-input-number>
+                        </el-form-item>
+                        <el-form-item label="整体评价" prop="overallRating">
+                            <el-rate 
+                                v-model="formData.overallRating"
+                                :colors="['#99A9BF', '#F7BA2A', '#FF9900']">
+                            </el-rate>
+                        </el-form-item>
+                        <el-form-item label="最终结果" prop="result">
+                            <el-select v-model="formData.result" placeholder="请选择最终结果">
+                                <el-option label="成功牵手" value="success"></el-option>
+                                <el-option label="继续观望" value="pending"></el-option>
+                                <el-option label="已结束" value="failed"></el-option>
+                            </el-select>
+                        </el-form-item>
+
+                        <!-- 备注信息 -->
+                        <el-form-item label="备注" prop="notes">
+                            <el-input 
+                                type="textarea" 
+                                v-model="formData.notes"
+                                placeholder="请输入其他补充信息">
+                            </el-input>
+                        </el-form-item>
+
+                        <!-- 表单操作按钮 -->
+                        <el-form-item>
+                            <el-button type="primary" @click="submitForm">保存数据</el-button>
+                            <el-button @click="resetForm">重置表单</el-button>
+                            <el-button type="success" @click="exportData">导出JSON</el-button>
+                        </el-form-item>
+                    </el-form>
+
+                    <!-- 已保存的数据列表 -->
+                    <div v-if="savedCandidates.length > 0" class="saved-data">
+                        <h3>已保存的数据</h3>
+                        <el-table :data="savedCandidates" style="width: 100%">
+                            <el-table-column prop="name" label="姓名" width="120"></el-table-column>
+                            <el-table-column prop="age" label="年龄" width="80"></el-table-column>
+                            <el-table-column prop="education" label="学历" width="120"></el-table-column>
+                            <el-table-column prop="occupation" label="职业" width="120"></el-table-column>
+                            <el-table-column prop="overallRating" label="评分" width="120">
+                                <template #default="scope">
+                                    <el-rate v-model="scope.row.overallRating" disabled></el-rate>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="result" label="结果" width="120"></el-table-column>
+                            <el-table-column label="操作">
+                                <template #default="scope">
+                                    <el-button 
+                                        size="small" 
+                                        type="danger" 
+                                        @click="deleteCandidate(scope.$index)">
+                                        删除
+                                    </el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                </div>
+            </el-main>
+
+            <!-- 页脚 -->
+            <el-footer>
+                <div class="footer-content">
+                    <p>© 2024 相亲匹配决策系统 - 基于贝叶斯最优停止理论</p>
+                </div>
+            </el-footer>
+        </el-container>
+    </div>
+
+    <!-- 引入Vue和Element Plus -->
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/element-plus"></script>
+    <script src="scripts/questionnaire.js"></script>
+</body>
+</html> 

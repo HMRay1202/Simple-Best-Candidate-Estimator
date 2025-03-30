@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>相亲匹配决策系统</title>
+    <!-- 引入Element Plus样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+    <link rel="stylesheet" href="styles/main.css">
+  </head>
+  <body>
+    <div id="app">
+      <!-- 顶部导航栏 -->
+      <el-container>
+        <el-header>
+          <div class="header-content">
+            <div class="logo">
+              <h1>相亲匹配决策系统</h1>
+            </div>
+            <el-menu mode="horizontal" :router="true" class="nav-menu">
+              <el-menu-item index="/questionnaire">开始测评</el-menu-item>
+              <el-menu-item index="/about">关于系统</el-menu-item>
+            </el-menu>
+          </div>
+        </el-header>
+
+        <!-- 主要内容区 -->
+        <el-main>
+          <div class="hero-section">
+            <h2>找到最适合你的人</h2>
+            <p>基于贝叶斯最优停止理论的智能匹配系统</p>
+            <el-button type="primary" size="large" @click="startQuestionnaire">
+              开始寻找缘分
+            </el-button>
+          </div>
+
+          <div class="features-section">
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-card>
+                  <div class="feature-card">
+                    <i class="el-icon-data-line"></i>
+                    <h3>数据驱动</h3>
+                    <p>利用历史数据和机器学习算法，为你提供科学的决策建议</p>
+                  </div>
+                </el-card>
+              </el-col>
+              <el-col :span="8">
+                <el-card>
+                  <div class="feature-card">
+                    <i class="el-icon-pie-chart"></i>
+                    <h3>智能分析</h3>
+                    <p>通过Bootstrap采样和贝叶斯推断，准确预测潜在匹配对象</p>
+                  </div>
+                </el-card>
+              </el-col>
+              <el-col :span="8">
+                <el-card>
+                  <div class="feature-card">
+                    <i class="el-icon-time"></i>
+                    <h3>最优时机</h3>
+                    <p>基于最优停止理论，帮助你在最佳时机做出决定</p>
+                  </div>
+                </el-card>
+              </el-col>
+            </el-row>
+          </div>
+        </el-main>
+
+        <!-- 页脚 -->
+        <el-footer>
+          <div class="footer-content">
+            <p>© 2024 相亲匹配决策系统 - 基于贝叶斯最优停止理论</p>
+          </div>
+        </el-footer>
+      </el-container>
+    </div>
+
+    <!-- 引入Vue和Element Plus -->
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/element-plus"></script>
+    <script src="scripts/main.js"></script>
+  </body>
+</html>
