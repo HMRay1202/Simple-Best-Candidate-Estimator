@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 from bootstrap_utils import generate_bootstrap_sample
-from bayes_optimal_stopping import BayesianOptimalStopping, simulate_multiple
+from Estimator.bayesian_estimator import BayesianOptimalStopping
+from simulate_multiple import simulate_multiple
 # 设置候选人 CSV 文件路径（或是以后的数据源）
 input_csv = "candidates.csv"
 
