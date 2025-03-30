@@ -45,26 +45,28 @@ print("读取到的 true_w 向量：", true_w)
 noise_std = 0.1
 y_train = X_train.dot(true_w) + np.random.normal(0, noise_std, size=len(X_train))
 
-# === 3. 多次贝叶斯最优停止模拟 ===
-expected_stop, df_rounds = simulate_multiple(
-    BayesianOptimalStopping,
-    X_train,
-    y_train,
-    true_w,
-    max_rounds=30,
-    num_simulations=100  # 可以根据需要调整模拟次数
-)
 
-# === 4. 输出结果 ===
-print("\n模拟结果：")
-print("估计的期望停止轮次:", expected_stop)
+if __name__ == '__main__':
+    # === 3. 多次贝叶斯最优停止模拟 ===
+    expected_stop, df_rounds = simulate_multiple(
+        BayesianOptimalStopping,
+        X_train,
+        y_train,
+        true_w,
+        max_rounds=30,
+        num_simulations=100  # 可以根据需要调整模拟次数
+    )
 
-df_prob = df_rounds.groupby("round")["predicted_prob_better"].mean().reset_index()
-print("\n各轮次的平均下一次更优概率:")
-print(df_prob)
+    # === 4. 输出结果 ===
+    print("\n模拟结果：")
+    print("估计的期望停止轮次:", expected_stop)
 
-print("\n部分模拟详细信息：")
-print(df_rounds.head())
+    df_prob = df_rounds.groupby("round")["predicted_prob_better"].mean().reset_index()
+    print("\n各轮次的平均下一次更优概率:")
+    print(df_prob)
+
+    print("\n部分模拟详细信息：")
+    print(df_rounds.head())
 
 
 # # ------------------------------
